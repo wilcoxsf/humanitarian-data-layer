@@ -32,6 +32,7 @@ THEMES = {
     "Coordination & Context: Conflict Events": "conflict",
     "Coordination & Context: National Risk": "risk",
     "Geography & Infrastructure: Baseline Population": "baseline_pop",
+    "Food Security, Nutrition & Poverty: Food Prices": "food_prices",
 }
 
 NEEDS_STATUS = {"INN": "people_in_need", "TGT": "people_targeted", "REA": "people_reached", "AFF": "people_affected"}
@@ -59,7 +60,7 @@ def fetch(ctx: Context) -> tuple[dict, dict]:
     paths, meta = {}, {"package": pkg["name"], "license_id": pkg.get("license_id"),
                        "license_title": pkg.get("license_title"), "resources": {}}
     for r in pkg["resources"]:
-        theme = next((t for prefix, t in THEMES.items() if r["name"].startswith(prefix) and "Prices" not in r["name"]), None)
+        theme = next((t for prefix, t in sorted(THEMES.items(), key=lambda kv: -len(kv[0])) if r["name"].startswith(prefix)), None)
         if not theme:
             continue
         fname = r["url"].rsplit("/", 1)[-1].split("?")[0]
@@ -360,6 +361,48 @@ def baseline_pop(df, R: Rows, meta, qa):
               method="OCHA COD-PS via HAPI (not WorldPop)", release=rel, additive=False)
 
 
+def food_prices(df, R: Rows, meta, qa, months=12):
+    """WFP market prices via HAPI: median retail price across markets, per area, commodity, unit and currency,
+    for the latest month each series has within the last 12 months. Forecast prices are left out."""
+    if df.empty:
+        return
+    d = df[(df.price_type.str.lower() == "retail") & ~df.price_flag.str.lower().str.contains("forecast")].copy()
+    d["p"] = pd.to_numeric(d.price, errors="coerce")
+    d = d[d.p.notna() & (d.p > 0)]
+    if d.empty:
+        return
+    last = d.reference_period_start.max()
+    cutoff = (pd.Timestamp(last[:10]) - pd.DateOffset(months=months)).date().isoformat()
+    d = d[d.reference_period_start >= cutoff]
+    rel = _release(meta, "food_prices")
+    groups = []
+    for r in d.to_dict("records"):
+        lvl, pc, nm = _loc(r)
+        keys = [(0, R.ctx.country.iso3, "")]
+        if lvl >= 1:
+            keys.append((1, r.get("admin1_code", ""), r.get("admin1_name", "")))
+        if lvl == 2:
+            keys.append((2, pc, nm))
+        for k in keys:
+            if k[1]:
+                groups.append({**{"lvl": k[0], "pc": k[1], "nm": k[2]}, "commodity": r["commodity_name"], "unit": r["unit"],
+                               "cur": r["currency_code"], "start": r["reference_period_start"], "end": r["reference_period_end"],
+                               "p": r["p"], "market": r.get("market_name", "")})
+    g = pd.DataFrame(groups)
+    key = ["lvl", "pc", "commodity", "unit", "cur"]
+    g = g[g.start == g.groupby(key).start.transform("max")]
+    agg = g.groupby(key + ["nm", "start", "end"]).agg(price=("p", "median"), markets=("market", "nunique")).reset_index()
+    for r in agg.to_dict("records"):
+        R.add(level=r["lvl"], pcode=r["pc"], name=r["nm"], metric="food_price_retail_median", value=round(float(r["price"]), 4),
+              domain="food_security", unit=f"{r['cur']} per {r['unit']}",
+              bd=breakdown(commodity=r["commodity"], unit=r["unit"], currency=r["cur"]),
+              start=r["start"], end=r["end"], period=r["start"][:7], status="derived",
+              method="median retail price across markets in the area (WFP via HAPI), latest month in the last 12",
+              release=rel, note=f"{r['markets']} markets", additive=False)
+    qa["food_prices_latest_month"] = last[:7]
+    qa["food_price_series"] = int(len(agg))
+
+
 def build(ctx: Context):
     paths, meta = fetch(ctx)
     R, qa, detail = Rows(ctx), {}, []
@@ -377,6 +420,7 @@ def build(ctx: Context):
     conflict(frames["conflict"], R, meta, qa) if "conflict" in frames else None
     risk(frames["risk"], R, meta, qa) if "risk" in frames else None
     baseline_pop(frames["baseline_pop"], R, meta, qa) if "baseline_pop" in frames else None
+    food_prices(frames["food_prices"], R, meta, qa) if "food_prices" in frames else None
     rows = R.out()
     qa["themes_found"] = sorted(paths)
     qa["themes_missing"] = sorted(set(THEMES.values()) - set(paths))

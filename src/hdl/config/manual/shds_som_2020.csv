@@ -1,0 +1,46 @@
+metric,breakdown,value,unit,domain,table,report_page,pdf_page,note
+mcpr_married_women,,0.9,percent,family_planning,Table 4.18,100,132,currently married women 15-49 using any modern method
+any_method_married_women,,6.9,percent,family_planning,Table 4.18,100,132,currently married women 15-49 using any method (rhythm 6.0)
+unmet_need_married_women,,36.6,percent,family_planning,Table 4.20,101,133,spacing 29.1 + limiting 7.5; revised definition (Bradley et al. 2012)
+unmet_need_married_women,residence=urban,35.8,percent,family_planning,Table 4.20,101,133,
+unmet_need_married_women,residence=rural,37.3,percent,family_planning,Table 4.20,101,133,
+unmet_need_married_women,residence=nomadic,36.8,percent,family_planning,Table 4.20,101,133,
+demand_satisfied_modern,,2.1,percent,family_planning,Table 4.20,101,133,share of demand satisfied by modern methods
+demand_satisfied_modern,residence=urban,4.7,percent,family_planning,Table 4.20,101,133,
+demand_satisfied_modern,residence=rural,1.1,percent,family_planning,Table 4.20,101,133,
+demand_satisfied_modern,residence=nomadic,0.3,percent,family_planning,Table 4.20,101,133,
+dtp1_received_12_23m,,21.0,percent,immunization,Table 6.2,142,174,card or mother's report
+dtp3_received_12_23m,,12.0,percent,immunization,Table 6.2,142,174,
+measles_received_12_23m,,22.7,percent,immunization,Table 6.2,142,174,
+basic_vaccinations_12_23m,,10.7,percent,immunization,Table 6.2,142,174,BCG + measles + 3 DPT + 3 polio
+no_vaccinations_12_23m,,60.3,percent,immunization,Table 6.2,142,174,zero-dose proxy
+dtp1_received_12_23m,residence=urban,34.6,percent,immunization,Table 6.2,142,174,
+dtp1_received_12_23m,residence=rural,27.0,percent,immunization,Table 6.2,142,174,
+dtp1_received_12_23m,residence=nomadic,4.9,percent,immunization,Table 6.2,142,174,
+dtp3_received_12_23m,residence=urban,20.6,percent,immunization,Table 6.2,142,174,
+dtp3_received_12_23m,residence=rural,16.9,percent,immunization,Table 6.2,142,174,
+dtp3_received_12_23m,residence=nomadic,1.0,percent,immunization,Table 6.2,142,174,
+no_vaccinations_12_23m,residence=urban,38.9,percent,immunization,Table 6.2,142,174,
+no_vaccinations_12_23m,residence=rural,52.9,percent,immunization,Table 6.2,142,174,
+no_vaccinations_12_23m,residence=nomadic,84.0,percent,immunization,Table 6.2,142,174,
+stunting_under5,,27.8,percent,nutrition,Table 7.1,163,195,height-for-age below -2 SD (WHO 2006 standards)
+severe_stunting_under5,,16.8,percent,nutrition,Table 7.1,163,195,below -3 SD
+wasting_under5,,11.6,percent,nutrition,Table 7.1,163,195,weight-for-height below -2 SD
+severe_wasting_under5,,6.1,percent,nutrition,Table 7.1,163,195,below -3 SD
+underweight_under5,,22.7,percent,nutrition,Table 7.1,163,195,weight-for-age below -2 SD
+wasting_under5,residence=urban,10.5,percent,nutrition,Table 7.1,163,195,
+wasting_under5,residence=rural,12.2,percent,nutrition,Table 7.1,163,195,
+wasting_under5,residence=nomadic,17.7,percent,nutrition,Table 7.1,163,195,
+stunting_under5,residence=urban,28.2,percent,nutrition,Table 7.1,163,195,
+stunting_under5,residence=rural,29.7,percent,nutrition,Table 7.1,163,195,
+stunting_under5,residence=nomadic,17.1,percent,nutrition,Table 7.1,163,195,small sample (193 children)
+net_attendance_primary,,18.5,percent,education,Table 2.4,38,70,primary-school age 6-13
+net_attendance_primary_girls,,17.2,percent,education,Table 2.4,38,70,
+net_attendance_secondary,,9.2,percent,education,Table 2.4,38,70,secondary-school age 14-18
+net_attendance_secondary_girls,,7.9,percent,education,Table 2.4,38,70,
+net_attendance_primary,residence=urban,21.1,percent,education,Table 2.4,38,70,
+net_attendance_primary,residence=rural,19.1,percent,education,Table 2.4,38,70,
+net_attendance_primary,residence=nomadic,1.6,percent,education,Table 2.4,38,70,
+net_attendance_secondary,residence=urban,12.5,percent,education,Table 2.4,38,70,
+net_attendance_secondary,residence=rural,4.0,percent,education,Table 2.4,38,70,
+net_attendance_secondary,residence=nomadic,0.0,percent,education,Table 2.4,38,70,

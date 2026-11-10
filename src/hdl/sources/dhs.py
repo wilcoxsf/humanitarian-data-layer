@@ -33,6 +33,10 @@ INDICATORS = {
     "CM_ECMR_C_U5M": ("mortality", "under5_mortality", "per 1,000 live births"),
     "RH_DELA_C_SKP": ("health", "skilled_birth_attendance", "percent"),
     "FE_FRTR_W_TFR": ("fertility", "total_fertility_rate", "births per woman"),
+    "ED_NARP_B_BTH": ("education", "net_attendance_primary", "percent"),
+    "ED_NARP_W_FEM": ("education", "net_attendance_primary_girls", "percent"),
+    "ED_NARS_B_BTH": ("education", "net_attendance_secondary", "percent"),
+    "ED_NARS_W_FEM": ("education", "net_attendance_secondary_girls", "percent"),
 }
 
 

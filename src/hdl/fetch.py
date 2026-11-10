@@ -93,7 +93,12 @@ class Fetcher:
             dest = self.raw_dir / dest
         rec = receipt_path(dest)
         if dest.exists() and rec.exists() and not self.refresh:
-            return dest
+            try:
+                same_url = json.loads(rec.read_text(encoding="utf-8")).get("url") == url
+            except (ValueError, OSError):
+                same_url = False
+            if same_url or self.offline:  # a cached file from a different URL (e.g. new indicators) is refetched
+                return dest
         if self.offline:
             raise OfflineMiss(f"offline mode and not cached: {dest}")
         dest.parent.mkdir(parents=True, exist_ok=True)

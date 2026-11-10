@@ -60,11 +60,38 @@ dhs:
   publish: false
 
 unpd_fp:
-  name: UN DESA Population Division, Estimates and Projections of Family Planning Indicators
-  provider: UN DESA Population Division data portal API
-  url: https://population.un.org/dataportal/
-  license: see UN DESA data portal terms
-  attribution: "United Nations, Department of Economic and Social Affairs, Population Division"
+  name: UN DESA Population Division, Estimates and Projections of Family Planning Indicators 2024
+  provider: UN DESA Population Division (public CSV zip; the data-portal API needs a token, the file does not)
+  url: https://population.un.org/wpp/Data_FamilyPlanningIndicators_2024.zip
+  license: see UN DESA terms of use (to check)
+  attribution: "United Nations, Department of Economic and Social Affairs, Population Division (2024). Estimates and Projections of Family Planning Indicators 2024"
+  license_checked: null
+  publish: false
+
+unicef_nutrition:
+  name: UNICEF/WHO/World Bank Joint Child Malnutrition Estimates and national survey estimates
+  provider: UNICEF data warehouse (SDMX, NUTRITION dataflow)
+  url: https://sdmx.data.unicef.org/
+  license: see UNICEF data terms (to check)
+  attribution: "UNICEF/WHO/World Bank Joint Child Malnutrition Estimates, via UNICEF"
+  license_checked: null
+  publish: false
+
+uis:
+  name: UNESCO Institute for Statistics, out-of-school children and rates
+  provider: UNESCO UIS public data API
+  url: https://api.uis.unesco.org/api/public/data/indicators
+  license: see UIS terms of use (to check)
+  attribution: "UNESCO Institute for Statistics (UIS)"
+  license_checked: null
+  publish: false
+
+shds_som:
+  name: Somali Health and Demographic Survey 2020, national and by residence (entered by hand)
+  provider: Federal Government of Somalia (Directorate of National Statistics) with UNFPA
+  url: https://somalia.unfpa.org/en/publications/somali-health-and-demographic-survey-2020
+  license: published report (terms to check)
+  attribution: "Federal Government of Somalia and UNFPA (2020). The Somali Health and Demographic Survey 2020"
   license_checked: null
   publish: false
 

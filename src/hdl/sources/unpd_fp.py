@@ -1,48 +1,60 @@
-"""UN DESA Population Division family-planning estimates (FPET), national, 2015-2030.
+"""UN DESA Population Division, Estimates and Projections of Family Planning Indicators 2024 (national, 2015-2030).
 
-The data endpoints need a bearer token (the indicator catalogue is open; data returned 401 on
-2026-11-10). Set UNPD_API_TOKEN in the environment (GitHub Actions secret) to enable this source;
-without it the source is skipped and the build says so. Not yet run against live data.
+Read from the public CSV zip (one download, cached, shared by all countries); no API token needed.
+Median variant; married/in-union women and all women. Years after 2024 are the model's projections.
 """
 
 from __future__ import annotations
 
-import os
+import zipfile
+
+import pandas as pd
 
 from ..context import Context
+from ..fetch import read_receipt
 
-API = "https://population.un.org/dataportalapi/api/v1"
-INDICATORS = {2: ("mcpr", "percent"), 5: ("unmet_need_modern", "percent"), 8: ("demand_satisfied_modern", "percent"),
-              10: ("modern_method_users", "women"), 12: ("unmet_need_modern_women", "women")}
-LAST_OBSERVED_GUIDE = 2025
+URL = "https://population.un.org/wpp/Data_FamilyPlanningIndicators_2024.zip"
+INDICATORS = {  # IndicatorShortName -> (metric, unit)
+    "CPModP": ("mcpr", "percent"),
+    "UNMP": ("unmet_need_any_method", "percent"),
+    "UNMModP": ("unmet_need_modern", "percent"),
+    "DEMMod": ("demand_satisfied_modern", "percent"),
+    "CPModN": ("modern_method_users", "thousand women"),
+    "UNMModN": ("unmet_need_modern_women", "thousand women"),
+}
+CATEGORIES = {"All women": "all", "Married or in a union women": "married_in_union"}
+LAST_ESTIMATE_YEAR = 2024
+_cache: dict = {}
+
+
+def _table(ctx: Context) -> pd.DataFrame:
+    path = ctx.fetcher.download(URL, "unpd_fp/Data_FamilyPlanningIndicators_2024.zip")
+    if str(path) not in _cache:
+        with zipfile.ZipFile(path) as z:
+            name = next(n for n in z.namelist() if n.endswith(".csv"))
+            d = pd.read_csv(z.open(name), usecols=["IndicatorShortName", "LocationId", "Time", "Variant", "Category", "Value"])
+        d = d[d.Variant.eq("Median") & d.IndicatorShortName.isin(INDICATORS) & d.Time.between(2015, 2030)]
+        _cache[str(path)] = (d, read_receipt(path))
+    return _cache[str(path)]
 
 
 def build(ctx: Context):
-    token = os.environ.get("UNPD_API_TOKEN", "").strip()
-    if not token:
-        return [], {"skipped": "UNPD_API_TOKEN not set (UN DESA data endpoints require a token)"}
-    headers = {"Authorization": f"Bearer {token}"}
-    ids = ",".join(str(i) for i in INDICATORS)
-    url = f"{API}/data/indicators/{ids}/locations/{ctx.country.m49}/start/2015/end/2030?pageSize=1000&format=json"
-    rows, page, pages = [], 1, 0
-    while url and pages < 20:
-        d = ctx.fetcher.get_json(url, f"unpd_fp/{ctx.country.iso}/data_p{page}.json", headers=headers)
-        pages += 1
-        for r in d.get("data", []):
-            if str(r.get("variant", "")).lower() != "median":
-                continue
-            metric, unit = INDICATORS.get(int(r["indicatorId"]), (None, None))
-            if not metric:
-                continue
-            y = str(r.get("timeLabel", ""))[:4]
-            rows.append({
-                "area_id": ctx.national_id, "iso3": ctx.country.iso3, "admin_level": 0, "pcode": ctx.national_pcode,
-                "area_name": ctx.country.name, "source_id": "unpd_fp", "domain": "family_planning", "metric": metric,
-                "breakdown": f"women={r.get('category', '')}", "value": float(r["value"]), "unit": unit, "period": y,
-                "period_start": f"{y}-01-01", "period_end": f"{y}-12-31",
-                "status": "projection" if int(y) > LAST_OBSERVED_GUIDE else "sourced", "geo_match": "national",
-                "method": "UN DESA FPET model estimate (median)", "source_release": "World Family Planning (UN DESA)",
-                "note": "",
-            })
-        url, page = d.get("nextPage"), page + 1
-    return rows, {"qa": {"pages": pages, "rows": len(rows)}}
+    d, rec = _table(ctx)
+    d = d[d.LocationId == int(ctx.country.m49)]
+    cats = sorted(d.Category.unique())
+    rows = []
+    for r in d.itertuples():
+        cat = CATEGORIES.get(r.Category)
+        if not cat:
+            continue
+        metric, unit = INDICATORS[r.IndicatorShortName]
+        y = int(r.Time)
+        rows.append({
+            "area_id": ctx.national_id, "iso3": ctx.country.iso3, "admin_level": 0, "pcode": ctx.national_pcode,
+            "area_name": ctx.country.name, "source_id": "unpd_fp", "domain": "family_planning", "metric": metric,
+            "breakdown": f"women={cat}", "value": float(r.Value), "unit": unit, "period": str(y),
+            "period_start": f"{y}-01-01", "period_end": f"{y}-12-31",
+            "status": "projection" if y > LAST_ESTIMATE_YEAR else "sourced", "geo_match": "national",
+            "method": "UN DESA FPET model, median", "source_release": "Family Planning Indicators 2024", "note": "",
+        })
+    return rows, {"files": [rec], "qa": {"rows": len(rows), "categories_in_file": cats}}

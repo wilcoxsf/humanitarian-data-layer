@@ -15,7 +15,7 @@ import yaml
 from . import geography, schema
 from .context import Context, Country
 from .fetch import Fetcher, UpstreamBlocked
-from .sources import derived, dhs, grid3_nga, hapi, ihme, rwi, unpd_fp, worldpop, wuenic
+from .sources import derived, dhs, grid3_nga, hapi, ihme, rwi, shds_som, uis, unicef_nutrition, unpd_fp, worldpop, wuenic
 
 CONFIG = Path(__file__).resolve().parent / "config"  # shipped inside the package
 ROOT = Path(os.environ.get("HDL_WORKDIR", Path.cwd()))  # where data/ and build/ go (run from the repo root)
@@ -26,6 +26,9 @@ SOURCES = {
     "ihme": ihme.build,
     "hapi": hapi.build,
     "wuenic": wuenic.build,
+    "unicef_nutrition": unicef_nutrition.build,
+    "uis": uis.build,
+    "shds_som": shds_som.build,
     "dhs": dhs.build,
     "unpd_fp": unpd_fp.build,
     "rwi": rwi.build,
@@ -86,7 +89,7 @@ def build_country(iso3: str, sources: list[str], fetcher: Fetcher, log) -> dict:
     if ctx.geo_info["qa"]["errors"]:
         log(f"{iso3}: geography QA errors {ctx.geo_info['qa']['errors']}")
     for name in sources:
-        if name == "grid3_nga" and iso3 != "NGA":
+        if (name == "grid3_nga" and iso3 != "NGA") or (name == "shds_som" and iso3 != "SOM"):
             continue
         if name == "dhs" and not ctx.country.dhs_code:
             result["info"][name] = {"skipped": "no DHS Program survey for this country"}
