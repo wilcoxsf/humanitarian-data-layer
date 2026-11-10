@@ -15,7 +15,20 @@ import yaml
 from . import geography, schema
 from .context import Context, Country
 from .fetch import Fetcher, UpstreamBlocked
-from .sources import derived, dhs, grid3_nga, hapi, ihme, rwi, shds_som, uis, unicef_nutrition, unpd_fp, worldpop, wuenic
+from .sources import (
+    derived,
+    dhs,
+    grid3_nga,
+    hapi,
+    ihme,
+    rwi,
+    shds_som,
+    uis,
+    unicef_nutrition,
+    unpd_fp,
+    worldpop,
+    wuenic,
+)
 
 CONFIG = Path(__file__).resolve().parent / "config"  # shipped inside the package
 ROOT = Path(os.environ.get("HDL_WORKDIR", Path.cwd()))  # where data/ and build/ go (run from the repo root)
