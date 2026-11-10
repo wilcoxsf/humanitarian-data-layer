@@ -72,10 +72,10 @@ unpd_wpp:
   name: UN World Population Prospects 2024 (births, mortality, married women, urbanization, single-year ages), national
   provider: UN DESA Population Division data portal API (token UNPD_API_TOKEN)
   url: https://population.un.org/dataportal/
-  license: believed CC BY 3.0 IGO (World Population Prospects); to confirm before publishing
-  attribution: "United Nations, Department of Economic and Social Affairs, Population Division (2024). World Population Prospects 2024"
-  license_checked: null
-  publish: false
+  license: CC BY 3.0 IGO (stated in UN DESA's WPP 2024 Summary of Results and Methodology reports; the dataset page links the UN Terms of Use and states nothing stricter)
+  attribution: "United Nations, Department of Economic and Social Affairs, Population Division (2024). World Population Prospects 2024, Online Edition"
+  license_checked: "2026-11-11"
+  publish: true
 
 unicef_nutrition:
   name: UNICEF/WHO/World Bank Joint Child Malnutrition Estimates and national survey estimates
