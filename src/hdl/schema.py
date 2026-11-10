@@ -20,6 +20,7 @@ COLUMNS = [
     "metric",
     "breakdown",      # key=value pairs joined with ';' (sector, phase, sex, age, series...), '' for none
     "value",
+    "value_text",     # optional text value (e.g. a plan status like 'Not set'); value is then empty
     "unit",
     "period",         # human-readable period label: 2026, 2025-07..2025-12, 2024 DHS
     "period_start",
@@ -83,9 +84,9 @@ def validate(df: pd.DataFrame) -> list[str]:
     bad_domain = sorted(set(df["domain"]) - DOMAINS)
     if bad_domain:
         problems.append(f"unknown domains: {bad_domain}")
-    no_value = df[(df["status"] != "missing") & df["value"].isna()]
+    no_value = df[(df["status"] != "missing") & df["value"].isna() & (df["value_text"] == "")]
     if len(no_value):
-        problems.append(f"{len(no_value)} non-missing rows have no numeric value")
+        problems.append(f"{len(no_value)} non-missing rows have no numeric or text value")
     dup = df.duplicated(KEY, keep=False)
     if dup.any():
         sample = df.loc[dup, KEY].head(5).to_dict("records")

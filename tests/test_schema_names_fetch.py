@@ -20,8 +20,9 @@ def test_validate_ok_and_problems():
     p = schema.validate(schema.frame([_row(status="guess")]))
     assert any("unknown status" in x for x in p)
     p = schema.validate(schema.frame([_row(value=None)]))
-    assert any("no numeric value" in x for x in p)
+    assert any("no numeric or text value" in x for x in p)
     assert schema.validate(schema.frame([_row(value=None, status="missing")])) == []
+    assert schema.validate(schema.frame([_row(value=None, value_text="Not set")])) == []
 
 
 def test_breakdown_skips_empty():
