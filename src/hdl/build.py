@@ -28,6 +28,7 @@ from .sources import (
     uis,
     unicef_nutrition,
     unpd_fp,
+    unpd_wpp,
     worldpop,
     wuenic,
 )
@@ -44,6 +45,7 @@ SOURCES = {
     "unicef_nutrition": unicef_nutrition.build,
     "uis": uis.build,
     "shds_som": shds_som.build,
+    "unpd_wpp": unpd_wpp.build,
     "iati": iati.build,
     "opencellid": opencellid.build,
     "dhs": dhs.build,
