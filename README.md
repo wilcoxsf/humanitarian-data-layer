@@ -18,6 +18,9 @@ Status: v2 alpha, November 2026. First countries: Somalia, South Sudan, Yemen, L
 | DHS Program API | contraception, unmet need, vaccination, wasting, stunting, mortality, fertility | national, admin 1 | not yet |
 | Meta Relative Wealth Index | mean and population-weighted relative wealth | admin 0 to 3 | not yet (CC BY-NC) |
 | UN DESA family planning (FPET) | modern contraceptive prevalence, unmet need, users | national | needs an API token |
+| IHME vaccine coverage 2025 (snapshot) | DTP1, DTP3, MCV1, under-1 weighted mean with lower/upper bounds | every admin area | no; one-time download, rows carry `as_of` |
+
+Snapshot sources come from a one-time download or a shared folder rather than a URL the build can refetch. Every row from them carries an `as_of` date, and a build without the files on disk skips them and says so (GitHub runners never have them). IHME's snapshot is dated 2026-08-27 and covers Somalia, South Sudan, Yemen, Lebanon and Nigeria; it does not include Haiti. Area means use WorldPop under-1 weights on HDL's areas, so they differ by 1 to 3 points from IHME's own admin tables, which use IHME's boundaries and population.
 
 Planned: IPC acute malnutrition (API key requested), IATI, OpenCelliD.
 
@@ -34,7 +37,7 @@ Planned: IPC acute malnutrition (API key requested), IATI, OpenCelliD.
 
 `hdl_long.parquet` / `hdl_long.csv.gz`, columns:
 
-`area_id, iso3, admin_level, pcode, area_name, source_id, domain, metric, breakdown, value, unit, period, period_start, period_end, status, geo_match, method, source_release, note`
+`area_id, iso3, admin_level, pcode, area_name, source_id, domain, metric, breakdown, value, unit, period, period_start, period_end, status, geo_match, method, source_release, as_of, note`
 
 `area_id` is `ISO3.level.pcode`, for example `SOM.2.SO1101`. `breakdown` holds key=value pairs such as `sector=Nutrition` or `ipc_type=current;phase=3+`. `areas.csv` lists every area with its parent, and `boundaries/` holds the geometries.
 

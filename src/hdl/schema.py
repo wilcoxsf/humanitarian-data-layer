@@ -28,6 +28,7 @@ COLUMNS = [
     "geo_match",      # exact, name, national, unmatched
     "method",         # how HDL produced the value from the source
     "source_release", # source vintage or file date
+    "as_of",          # set only for snapshot sources (one-time download / shared folder): the snapshot date
     "note",
 ]
 

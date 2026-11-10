@@ -13,7 +13,7 @@ import yaml
 from . import geography, schema
 from .context import Context, Country
 from .fetch import Fetcher, UpstreamBlocked
-from .sources import derived, dhs, grid3_nga, hapi, rwi, unpd_fp, worldpop, wuenic
+from .sources import derived, dhs, grid3_nga, hapi, ihme, rwi, unpd_fp, worldpop, wuenic
 
 ROOT = Path(__file__).resolve().parents[2]
 CONFIG = ROOT / "config"
@@ -21,6 +21,7 @@ RAW = ROOT / "data" / "raw"
 
 SOURCES = {
     "worldpop": worldpop.build,
+    "ihme": ihme.build,
     "hapi": hapi.build,
     "wuenic": wuenic.build,
     "dhs": dhs.build,
@@ -85,6 +86,10 @@ def build_country(iso3: str, sources: list[str], fetcher: Fetcher, log) -> dict:
         info["requests"] = fetcher.requests - start
         result["info"][name] = info
         df = schema.frame(rows)
+        spec = load_sources().get(name, {})
+        if spec.get("snapshot"):
+            df["as_of"] = str(spec.get("as_of", ""))
+            info["as_of"] = spec.get("as_of")
         result["frames"].append(df)
         log(f"{iso3} {name}: {len(df):,} rows, {info['requests']} requests")
     return result

@@ -77,6 +77,17 @@ rwi:
   license_checked: null
   publish: false
 
+ihme:
+  name: IHME subnational vaccine coverage 2025 (DTP1, DTP3, MCV1), 5 km surfaces
+  provider: Institute for Health Metrics and Evaluation (IHME)
+  url: none public; one-time download from IHME, repackaged on 2026-08-27 and kept in a private folder
+  license: IHME terms (not yet checked)
+  attribution: "Institute for Health Metrics and Evaluation (IHME), vaccine coverage estimates 2025"
+  license_checked: null
+  publish: false
+  snapshot: true
+  as_of: "2026-08-27"   # every row carries this; refresh only by a new manual download
+
 derived:
   name: HDL cross-source estimates (e.g. national zero-dose children = WorldPop under-1 x (1 - WUENIC DTP1))
   provider: this repository
@@ -87,5 +98,7 @@ derived:
   publish: false
 
 # Wired in later, once keys arrive or terms are checked:
-#   ipc_amn (IPC API key requested 2026-11-10), iati (IATI Datastore key), opencellid (token, CC BY-SA),
-#   ihme (subnational vaccine coverage rasters: no public download path found; terms to check).
+#   ipc_amn (IPC API key requested 2026-11-10), iati (IATI Datastore key), opencellid (token, CC BY-SA).
+#
+# Snapshot sources (snapshot: true) come from a one-time download or a shared folder, not a URL HDL can
+# refetch. Their rows carry `as_of` and a build without the files on disk skips them and says so.
