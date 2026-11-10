@@ -1,0 +1,85 @@
+name: build
+
+# Manual only. Nothing here runs on a schedule.
+# Uploads ONLY the public bundle: artifacts on a public repository can be downloaded by anyone, so
+# sources whose terms are not yet checked (publish: false in config/sources.yaml) never leave the runner.
+
+on:
+  workflow_dispatch:
+    inputs:
+      countries:
+        description: "Comma-separated ISO3 codes, or 'all'"
+        default: all
+        required: true
+      sources:
+        description: "Comma-separated source ids, or 'all'"
+        default: all
+        required: true
+      release:
+        description: "Release id, e.g. 2026.11.1"
+        required: true
+      publish:
+        description: "Create a GitHub pre-release with the public bundle"
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 340
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - run: pip install -e ".[dev]"
+      - run: pytest -q
+
+      - name: Restore downloaded source files
+        uses: actions/cache@v4
+        with:
+          path: data/raw
+          key: hdl-raw-${{ inputs.release }}-${{ github.run_id }}
+          restore-keys: |
+            hdl-raw-${{ inputs.release }}-
+            hdl-raw-
+
+      - name: Build
+        env:
+          UNPD_API_TOKEN: ${{ secrets.UNPD_API_TOKEN }}
+        run: |
+          hdl build --countries "${{ inputs.countries }}" --sources "${{ inputs.sources }}" \
+            --release "${{ inputs.release }}" --max-requests 2500 || echo "BUILD_PROBLEMS=1" >> "$GITHUB_ENV"
+          cat "build/${{ inputs.release }}/public/QA.md" >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Package public bundle
+        run: |
+          cd "build/${{ inputs.release }}/public"
+          zip -qr "../hdl_${{ inputs.release }}_countries.zip" countries
+          if [ -d boundaries ]; then zip -qr "../hdl_${{ inputs.release }}_boundaries.zip" boundaries; fi
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: hdl-${{ inputs.release }}-public
+          path: |
+            build/${{ inputs.release }}/public/*.csv*
+            build/${{ inputs.release }}/public/*.parquet
+            build/${{ inputs.release }}/public/*.json
+            build/${{ inputs.release }}/public/*.md
+            build/${{ inputs.release }}/*.zip
+          retention-days: 30
+
+      - name: Publish pre-release
+        if: ${{ inputs.publish && env.BUILD_PROBLEMS != '1' }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          R="${{ inputs.release }}"
+          P="build/$R/public"
+          gh release create "v$R" --prerelease --title "HDL $R" --notes-file "$P/QA.md" \
+            "$P"/hdl_long.csv.gz "$P"/hdl_long.parquet "$P"/areas.csv "$P"/manifest.json "$P"/DATA_LICENSES.md \
+            build/$R/*.zip

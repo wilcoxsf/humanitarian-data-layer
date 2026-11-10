@@ -1,0 +1,91 @@
+# Every source HDL reads. `license` is what the provider states; `publish` decides whether
+# its rows go into the public release bundle. Anything not yet checked stays `publish: false`
+# and is built locally only. Change `publish` only after reading the provider's terms.
+#
+# license_checked: date someone read the provider's terms page, or null.
+
+geography:
+  name: OCHA Common Operational Datasets, administrative boundaries (COD-AB)
+  provider: OCHA via HDX
+  url: https://data.humdata.org/dataset/cod-ab-{iso3_lower}
+  license: CC BY-IGO (from the HDX dataset metadata, recorded per country in the receipt)
+  attribution: "OCHA, administrative boundaries (COD-AB), via HDX"
+  license_checked: null
+  publish: true
+
+worldpop:
+  name: WorldPop Global2 R2025A, 1 km constrained, total and age/sex structures
+  provider: WorldPop, University of Southampton
+  url: https://data.worldpop.org/GIS/Population/Global_2015_2030/R2025A/
+  license: CC BY 4.0
+  attribution: "WorldPop (www.worldpop.org), Global2 R2025A"
+  license_checked: null
+  publish: true
+
+grid3_nga:
+  name: GRID3 / WorldPop Nigeria population v3.0 (2025), LGA totals
+  provider: WorldPop and GRID3 Nigeria
+  url: https://data.worldpop.org/repo/wopr/NGA/population/v3.0/
+  doi: 10.5258/SOTON/WP00782
+  license: CC BY 4.0
+  attribution: "WorldPop and GRID3 (2025). Nigeria population v3.0. doi:10.5258/SOTON/WP00782"
+  license_checked: null
+  publish: true
+
+hapi:
+  name: HDX Humanitarian API country packages (needs, IPC, operational presence, IDPs, refugees, returnees, funding, conflict, national risk, baseline population)
+  provider: OCHA Centre for Humanitarian Data (HDX HAPI), from many upstream providers
+  url: https://data.humdata.org/dataset/hdx-hapi-{iso3_lower}
+  license: per upstream dataset (recorded in the receipt); conflict events are ACLED-derived and carry ACLED's terms
+  attribution: "HDX HAPI, OCHA Centre for Humanitarian Data, and the upstream providers named in each row"
+  license_checked: null
+  publish: false
+
+wuenic:
+  name: WHO/UNICEF Estimates of National Immunization Coverage (WUENIC)
+  provider: UNICEF data warehouse (SDMX)
+  url: https://sdmx.data.unicef.org/
+  license: see UNICEF data terms
+  attribution: "WHO/UNICEF Estimates of National Immunization Coverage, via UNICEF"
+  license_checked: null
+  publish: false
+
+dhs:
+  name: The DHS Program indicator API (national and subnational survey estimates)
+  provider: ICF, The DHS Program (USAID-funded)
+  url: https://api.dhsprogram.com/
+  license: see DHS Program terms of use
+  attribution: "The DHS Program, ICF, via the DHS Program API"
+  license_checked: null
+  publish: false
+
+unpd_fp:
+  name: UN DESA Population Division, Estimates and Projections of Family Planning Indicators
+  provider: UN DESA Population Division data portal API
+  url: https://population.un.org/dataportal/
+  license: see UN DESA data portal terms
+  attribution: "United Nations, Department of Economic and Social Affairs, Population Division"
+  license_checked: null
+  publish: false
+
+rwi:
+  name: Relative Wealth Index (Meta Data for Good)
+  provider: Meta and Center for Effective Global Action, via HDX
+  url: https://data.humdata.org/dataset/relative-wealth-index
+  license: CC BY-NC 4.0 (non-commercial)
+  attribution: "Chi et al. (2022), Microestimates of wealth for all low- and middle-income countries, PNAS; Meta Data for Good"
+  license_checked: null
+  publish: false
+
+derived:
+  name: HDL cross-source estimates (e.g. national zero-dose children = WorldPop under-1 x (1 - WUENIC DTP1))
+  provider: this repository
+  url: src/hdl/sources/derived.py
+  license: inherits its inputs' terms
+  attribution: "Humanitarian Data Layer, from the sources named in each row's method"
+  license_checked: null
+  publish: false
+
+# Wired in later, once keys arrive or terms are checked:
+#   ipc_amn (IPC API key requested 2026-11-10), iati (IATI Datastore key), opencellid (token, CC BY-SA),
+#   ihme (subnational vaccine coverage rasters: no public download path found; terms to check).

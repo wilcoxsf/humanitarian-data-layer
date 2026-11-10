@@ -1,0 +1,15 @@
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+.ruff_cache/
+*.egg-info/
+dist/
+
+# Downloaded source files and build outputs never go in git.
+data/
+build/
+
+# Credentials
+.env
+*.env

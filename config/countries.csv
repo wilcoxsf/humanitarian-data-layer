@@ -1,0 +1,7 @@
+iso3,iso2,m49,country,dhs_code,active,note
+SOM,SO,706,Somalia,,true,no DHS Program survey; SHDS 2020 is not in the DHS API
+SSD,SS,728,South Sudan,,true,no DHS Program survey
+YEM,YE,887,Yemen,YE,true,
+LBN,LB,422,Lebanon,,true,no DHS Program survey
+HTI,HT,332,Haiti,HT,true,
+NGA,NG,566,Nigeria,NG,true,

@@ -1,0 +1,16 @@
+iso3,source_id,source_name,pcode,note
+NGA,*,FCT Abuja,NG015,DHS label for the Federal Capital Territory
+NGA,*,FCT,NG015,Federal Capital Territory
+NGA,*,Federal Capital,NG015,GRID3 state label
+YEM,dhs,Al-Baidha,YE14,DHS 2013 transliteration of Al Bayda
+YEM,dhs,Al-Hodiedah,YE18,Al Hodeidah
+YEM,dhs,Al-Mhrah,YE28,Al Maharah
+YEM,dhs,Al-Mhweit,YE27,Al Mahwit
+YEM,dhs,Aldhalae,YE30,Ad Dali'
+YEM,dhs,Hadramout,YE19,Hadramawt
+YEM,dhs,Mareb,YE26,Ma'rib
+YEM,dhs,Reimah,YE31,Raymah
+YEM,dhs,Sadah,YE22,Sa'dah
+YEM,dhs,Sanaa,YE23,Sana'a governorate
+YEM,dhs,Sanaa City,YE13,Amanat Al Asimah (Sana'a City)
+YEM,dhs,Taiz,YE15,Ta'iz
