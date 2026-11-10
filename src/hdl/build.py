@@ -20,7 +20,9 @@ from .sources import (
     dhs,
     grid3_nga,
     hapi,
+    iati,
     ihme,
+    opencellid,
     rwi,
     shds_som,
     uis,
@@ -42,6 +44,8 @@ SOURCES = {
     "unicef_nutrition": unicef_nutrition.build,
     "uis": uis.build,
     "shds_som": shds_som.build,
+    "iati": iati.build,
+    "opencellid": opencellid.build,
     "dhs": dhs.build,
     "unpd_fp": unpd_fp.build,
     "rwi": rwi.build,
@@ -98,7 +102,8 @@ def make_context(iso3: str, *, offline=False, refresh=False, max_requests=400, f
 def build_country(iso3: str, sources: list[str], fetcher: Fetcher, log) -> dict:
     ctx = make_context(iso3, fetcher=fetcher)
     result = {"iso3": iso3, "areas": geography.areas_table(ctx.areas, ctx.geo_info["meta"]), "gdf": ctx.areas,
-              "frames": [], "info": {"geography": {k: v for k, v in ctx.geo_info.items()}}, "presence_detail": []}
+              "frames": [], "info": {"geography": {k: v for k, v in ctx.geo_info.items()}}, "presence_detail": [],
+              "details": {}}
     if ctx.geo_info["qa"]["errors"]:
         log(f"{iso3}: geography QA errors {ctx.geo_info['qa']['errors']}")
     for name in sources:
@@ -120,6 +125,8 @@ def build_country(iso3: str, sources: list[str], fetcher: Fetcher, log) -> dict:
             continue
         if name == "hapi":
             result["presence_detail"] = info.pop("presence_detail", [])
+        for tname, trows in info.pop("detail_tables", {}).items():  # extra tables a source wants in the bundle
+            result["details"].setdefault((name, tname), []).extend(trows)
         info["requests"] = fetcher.requests - start
         result["info"][name] = info
         df = schema.frame(rows)

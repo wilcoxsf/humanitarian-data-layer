@@ -45,3 +45,12 @@ def test_fetch_offline_and_cache(tmp_path):
     receipt_path(tmp_path / "a.csv").write_text(json.dumps({"url": "u"}))
     assert f.download("https://example.org/a.csv", "a.csv").read_text() == "x\n1\n"
     assert f.requests == 0
+
+
+def test_receipts_store_the_redacted_url(tmp_path):
+    f = Fetcher(tmp_path)  # online, but the cached file must be reused without a request
+    (tmp_path / "x.csv").write_text("a\n")
+    receipt_path(tmp_path / "x.csv").write_text(json.dumps({"url": "https://h/d?token=***"}))
+    got = f.download("https://h/d?token=SECRET123", "x.csv", receipt_url="https://h/d?token=***")
+    assert got.read_text() == "a\n" and f.requests == 0
+    assert "SECRET" not in receipt_path(tmp_path / "x.csv").read_text()

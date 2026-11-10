@@ -104,6 +104,24 @@ rwi:
   license_checked: null
   publish: false
 
+iati:
+  name: IATI Datastore, active aid activities by country and sector, and IRC's published activities
+  provider: International Aid Transparency Initiative (IATI) Datastore API (key IATI_API_KEY)
+  url: https://api.iatistandard.org/datastore
+  license: each publisher's IATI license (mostly open); to check
+  attribution: "IATI Datastore, and the publishers named in each activity"
+  license_checked: null
+  publish: false
+
+opencellid:
+  name: OpenCelliD cell tower database, counted per admin area
+  provider: OpenCelliD (Unwired Labs), crowdsourced (token OPENCELLID_TOKEN)
+  url: https://opencellid.org/
+  license: CC BY-SA 4.0 (share-alike)
+  attribution: "OpenCelliD Project, licensed under CC BY-SA 4.0"
+  license_checked: null
+  publish: false
+
 ihme:
   name: IHME subnational vaccine coverage 2025 (DTP1, DTP3, MCV1), 5 km surfaces
   provider: Institute for Health Metrics and Evaluation (IHME)
@@ -125,7 +143,7 @@ derived:
   publish: false
 
 # Wired in later, once keys arrive or terms are checked:
-#   ipc_amn (IPC API key requested 2026-11-10), iati (IATI Datastore key), opencellid (token, CC BY-SA).
+#   ipc_amn (IPC API key requested 2026-11-10).
 #
 # Snapshot sources (snapshot: true) come from a one-time download or a shared folder, not a URL HDL can
 # refetch. Their rows carry `as_of` and a build without the files on disk skips them and says so.

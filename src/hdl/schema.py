@@ -48,7 +48,7 @@ STATUSES = {
 
 DOMAINS = {
     "population", "need", "food_security", "presence", "displacement", "funding", "conflict", "risk",
-    "immunization", "family_planning", "nutrition", "wealth", "health", "fertility", "mortality", "education",
+    "immunization", "family_planning", "nutrition", "wealth", "health", "fertility", "mortality", "education", "connectivity",
 }
 
 
