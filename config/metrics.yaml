@@ -1,0 +1,56 @@
+# Data dictionary: one entry per source_id/metric. `caveat` is what a reader (or a Claude skill)
+# must not get wrong. Plugins add their own entries the same way.
+
+worldpop/population_total: {definition: "Total population, WorldPop Global2 R2025A 1 km constrained, summed over the area", caveat: "2026-2030 are WorldPop projections (status projection). Use this as the default denominator; COD-PS and GRID3 are alternative estimates, never mixed in."}
+worldpop/population_under1: {definition: "Population aged 0 (WorldPop age band 00)", caveat: "Approximates the surviving-infant cohort used for immunization targets."}
+worldpop/population_under5: {definition: "Population aged 0-4 (bands 00 + 01)", caveat: "Denominator for nutrition (6-59 months is about 90% of it)."}
+worldpop/women_15_49: {definition: "Female population aged 15-49 (bands f_15 to f_45)", caveat: "Denominator for family planning (women of reproductive age, all marital statuses)."}
+grid3_nga/population_total_grid3: {definition: "GRID3/WorldPop Nigeria v3.0 2025 population, published state and LGA totals", caveat: "A second Nigeria estimate on GRID3 boundaries, matched to OCHA areas by name; 38 LGAs unmatched. Do not add to WorldPop."}
+hapi/population_total_cod_ps: {definition: "OCHA COD-PS population (government/UNFPA based)", caveat: "Not WorldPop. Often older baselines (Somalia 2014). Do not mix with WorldPop in one calculation."}
+hapi/population_under5_cod_ps: {definition: "OCHA COD-PS population aged 0-4", caveat: "As population_total_cod_ps."}
+hapi/people_in_need: {definition: "People in need from the OCHA Humanitarian Needs Overview, by sector (breakdown sector=...)", caveat: "Sectors overlap: never add sectors together; use sector=Intersectoral for the overall figure. Admin1 rows may be derived sums of admin2 (status derived, or partial when districts do not reach the national headline). Some countries carry a second national figure with category=total."}
+hapi/people_targeted: {definition: "People targeted by the humanitarian response plan, by sector", caveat: "A plan figure, not need. Same overlap rules as people_in_need."}
+hapi/people_reached: {definition: "People reached as reported in the HNO/HRP", caveat: "Sparse; national only."}
+hapi/people_affected: {definition: "People affected as reported in the HNO", caveat: "Sparse."}
+hapi/population_in_ipc_phase: {definition: "People in each IPC/CH acute food insecurity phase (breakdown ipc_type and phase; phase=all is the analysed population)", caveat: "Acute FOOD INSECURITY, not acute malnutrition. Projections carry status projection. Somalia and others analyse livelihood zones and urban/IDP groups: those units stay unmatched (pcode IPC:...), never forced onto districts."}
+hapi/share_in_ipc_phase: {definition: "Share of the analysed population in the phase", caveat: "Recomputed from summed units where several units sit in one area."}
+hapi/organizations_reported: {definition: "Distinct organizations listed in the OCHA 3W/5W for the area and sector, latest period", caveat: "Who reports to the cluster, not full coverage. A missing organization may still operate there."}
+hapi/idps: {definition: "Internally displaced people, IOM DTM via HAPI, latest round of each operation/assessment series", caveat: "Series are not summed. Rounds older than two years are stale."}
+hapi/persons_of_concern: {definition: "UNHCR refugees and other persons of concern in the country (breakdown group, origin)", caveat: "National only. Group REF = refugees, ASY = asylum seekers, OOC = others of concern."}
+hapi/returnees: {definition: "UNHCR returnees", caveat: "National only."}
+hapi/appeal_requirements: {definition: "Humanitarian appeal requirements, OCHA FTS", caveat: "USD, by appeal."}
+hapi/appeal_funding: {definition: "Funding received against the appeal, OCHA FTS", caveat: "USD, by appeal; 'Not specified' rows are funding outside an appeal."}
+hapi/appeal_funded_share: {definition: "Share of the appeal funded", caveat: "Percent."}
+hapi/conflict_events: {definition: "Conflict events in the last 12 months (ACLED monthly aggregates via HAPI), by event type", caveat: "ACLED terms apply. Months without data count as zero within the window."}
+hapi/conflict_fatalities: {definition: "Reported conflict fatalities in the last 12 months (ACLED via HAPI)", caveat: "As conflict_events."}
+hapi/inform_overall_risk: {definition: "INFORM Risk index, 0-10", caveat: "National."}
+hapi/inform_hazard_exposure_risk: {definition: "INFORM hazard and exposure dimension, 0-10", caveat: "National."}
+hapi/inform_vulnerability_risk: {definition: "INFORM vulnerability dimension, 0-10", caveat: "National."}
+hapi/inform_coping_capacity_risk: {definition: "INFORM lack of coping capacity dimension, 0-10", caveat: "National."}
+hapi/inform_global_rank: {definition: "INFORM global rank", caveat: "1 = highest risk."}
+wuenic/dtp1_coverage: {definition: "WHO/UNICEF estimate of national DTP1 coverage among surviving infants", caveat: "National only; never applied to districts."}
+wuenic/dtp3_coverage: {definition: "WHO/UNICEF estimate of national DTP3 coverage", caveat: "National only."}
+wuenic/mcv1_coverage: {definition: "WHO/UNICEF estimate of national MCV1 coverage", caveat: "National only."}
+wuenic/mcv2_coverage: {definition: "WHO/UNICEF estimate of national MCV2 coverage", caveat: "National only."}
+ihme/dtp1_coverage_ihme: {definition: "IHME 2025 DTP1 coverage, WorldPop under-1 weighted mean over the area (breakdown bound=lower/upper for uncertainty)", caveat: "Restricted (IHME terms). Snapshot as_of 2026-08-27. Not available for Haiti. Interval level undocumented."}
+ihme/dtp3_coverage_ihme: {definition: "IHME 2025 DTP3 coverage, under-1 weighted", caveat: "As dtp1_coverage_ihme."}
+ihme/mcv1_coverage_ihme: {definition: "IHME 2025 MCV1 coverage, under-1 weighted", caveat: "As dtp1_coverage_ihme."}
+dhs/mcpr_married_women: {definition: "Married women using a modern contraceptive method, DHS", caveat: "Survey year in period; Haiti 2016 and Yemen 2013 are stale. Admin1 only."}
+dhs/mcpr_all_women: {definition: "All women using a modern method, DHS", caveat: "As mcpr_married_women."}
+dhs/unmet_need_married_women: {definition: "Married women with unmet need for family planning, DHS", caveat: "As mcpr_married_women."}
+dhs/unmet_need_all_women: {definition: "All women with unmet need for family planning, DHS", caveat: "As mcpr_married_women."}
+dhs/dtp1_received_12_23m: {definition: "Children 12-23 months who received DTP1, DHS", caveat: "Survey-based; compare with IHME and WUENIC, do not merge."}
+dhs/dtp3_received_12_23m: {definition: "Children 12-23 months who received DTP3, DHS", caveat: "As above."}
+dhs/measles_received_12_23m: {definition: "Children 12-23 months who received measles vaccine, DHS", caveat: "As above."}
+dhs/no_vaccinations_12_23m: {definition: "Children 12-23 months with no vaccinations (zero-dose proxy), DHS", caveat: "As above."}
+dhs/basic_vaccinations_12_23m: {definition: "Children 12-23 months fully vaccinated with basic antigens, DHS", caveat: "As above."}
+dhs/wasting_under5: {definition: "Children under 5 wasted (weight-for-height below -2 SD), DHS", caveat: "Point prevalence at survey time; seasonal. Admin1 only."}
+dhs/stunting_under5: {definition: "Children under 5 stunted, DHS", caveat: "Admin1 only."}
+dhs/underweight_under5: {definition: "Children under 5 underweight, DHS", caveat: "Admin1 only."}
+dhs/under5_mortality: {definition: "Under-five mortality rate, DHS", caveat: "Per 1,000 live births; ten-year reference period at admin1."}
+dhs/skilled_birth_attendance: {definition: "Births assisted by a skilled provider, DHS", caveat: "Admin1 only."}
+dhs/total_fertility_rate: {definition: "Total fertility rate, DHS", caveat: "Births per woman."}
+rwi/rwi_mean: {definition: "Mean Meta Relative Wealth Index of ~2.4 km tiles in the area", caveat: "Relative within one country only; never compare across countries. CC BY-NC."}
+rwi/rwi_mean_popweighted: {definition: "Relative Wealth Index weighted by WorldPop 2025 population", caveat: "As rwi_mean."}
+rwi/rwi_tiles: {definition: "Number of RWI tiles in the area", caveat: "Low counts mean a noisy mean."}
+derived/zero_dose_children_estimate: {definition: "Children with no DTP1 = WorldPop under-1 x (1 - WUENIC DTP1)", caveat: "Estimate, national only."}

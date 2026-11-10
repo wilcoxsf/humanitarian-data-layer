@@ -31,8 +31,8 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 340
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
         with:
           python-version: "3.12"
           cache: pip
@@ -40,7 +40,7 @@ jobs:
       - run: pytest -q
 
       - name: Restore downloaded source files
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: data/raw
           key: hdl-raw-${{ inputs.release }}-${{ github.run_id }}
@@ -62,7 +62,7 @@ jobs:
           zip -qr "../hdl_${{ inputs.release }}_countries.zip" countries
           if [ -d boundaries ]; then zip -qr "../hdl_${{ inputs.release }}_boundaries.zip" boundaries; fi
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: hdl-${{ inputs.release }}-public
           path: |
