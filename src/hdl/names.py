@@ -11,7 +11,7 @@ import re
 import unicodedata
 from pathlib import Path
 
-ALIASES = Path(__file__).resolve().parents[2] / "config" / "name_aliases.csv"
+ALIASES = Path(__file__).resolve().parent / "config" / "name_aliases.csv"
 DROP_WORDS = {"state", "governorate", "department", "departement", "region", "province", "district", "lga", "county"}
 
 

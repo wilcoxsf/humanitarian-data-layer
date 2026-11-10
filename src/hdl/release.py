@@ -3,7 +3,7 @@ a manifest with checksums and receipts, and a human-readable QA report.
 
 Two bundles:
   full/    every source (for local and internal use)
-  public/  only sources with `publish: true` in config/sources.yaml (what goes on GitHub Releases)
+  public/  only sources with `publish: true` in src/hdl/config/sources.yaml (what goes on GitHub Releases)
 """
 
 from __future__ import annotations
@@ -23,7 +23,7 @@ from .schema import COLUMNS, KEY
 def _git_commit() -> str:
     try:
         return subprocess.run(["git", "rev-parse", "--short", "HEAD"], capture_output=True, text=True,
-                              cwd=Path(__file__).resolve().parents[2], timeout=10).stdout.strip()
+                              cwd=Path(__file__).resolve().parent, timeout=10).stdout.strip()
     except Exception:
         return ""
 

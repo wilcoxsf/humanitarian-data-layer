@@ -17,8 +17,8 @@ from .context import Context, Country
 from .fetch import Fetcher, UpstreamBlocked
 from .sources import derived, dhs, grid3_nga, hapi, ihme, rwi, unpd_fp, worldpop, wuenic
 
-ROOT = Path(__file__).resolve().parents[2]
-CONFIG = ROOT / "config"
+CONFIG = Path(__file__).resolve().parent / "config"  # shipped inside the package
+ROOT = Path(os.environ.get("HDL_WORKDIR", Path.cwd()))  # where data/ and build/ go (run from the repo root)
 RAW = Path(os.environ.get("HDL_RAW_DIR", ROOT / "data" / "raw"))
 
 SOURCES = {

@@ -49,10 +49,10 @@ python -m venv .venv
 hdl build --countries SOM --sources all --release my-test
 ```
 
-Outputs land in `build/<release>/full` (every source) and `build/<release>/public` (only sources marked `publish: true` in `config/sources.yaml`). Downloads are cached in `data/raw/` with receipts; `--offline` rebuilds from the cache without touching the network. Each run has a hard request cap (`--max-requests`), spaces requests out, and stops on 401, 403 or 429.
+Outputs land in `build/<release>/full` (every source) and `build/<release>/public` (only sources marked `publish: true` in `src/hdl/config/sources.yaml`). Downloads are cached in `data/raw/` with receipts; `--offline` rebuilds from the cache without touching the network. Each run has a hard request cap (`--max-requests`), spaces requests out, and stops on 401, 403 or 429.
 
 Heavy builds (WorldPop rasters for many countries) run on GitHub Actions through the manual `build` workflow. It uploads the public bundle only.
 
 ## Licenses
 
-Code: MIT. Data keeps its source's license; see `DATA_LICENSES.md` in each release and `config/sources.yaml`. A source goes into public releases only after someone has read its terms and set `publish: true`.
+Code: MIT. Data keeps its source's license; see `DATA_LICENSES.md` in each release and `src/hdl/config/sources.yaml`. A source goes into public releases only after someone has read its terms and set `publish: true`.
