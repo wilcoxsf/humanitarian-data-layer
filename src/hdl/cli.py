@@ -26,7 +26,8 @@ def main(argv=None) -> int:
     b.add_argument("--offline", action="store_true", help="use cached downloads only; no network")
     b.add_argument("--refresh", action="store_true", help="re-download even if cached")
     b.add_argument("--max-requests", type=int, default=1500, help="hard cap on upstream requests for the run")
-    b.add_argument("--reuse", default=None, help="hdl_long.parquet from an earlier build: keep its rows for sources not rebuilt now")
+    b.add_argument("--reuse", default=None, help="hdl_long.parquet path or release URL: keep its rows for sources not rebuilt now")
+    b.add_argument("--plugin", action="append", default=[], help="python package that adds sources (SOURCES, SPECS); repeatable")
     sub.add_parser("sources")
     sub.add_parser("countries")
     a = ap.parse_args(argv)
@@ -40,6 +41,8 @@ def main(argv=None) -> int:
             print(c.iso3, c.name)
         return 0
 
+    for p in getattr(a, "plugin", []) or []:
+        build.load_plugin(p)
     countries = list(build.load_countries()) if a.countries == "all" else [c.strip().upper() for c in a.countries.split(",")]
     sources = list(build.SOURCES) if a.sources == "all" else [s.strip() for s in a.sources.split(",")]
     unknown = [s for s in sources if s not in build.SOURCES]
@@ -49,7 +52,7 @@ def main(argv=None) -> int:
     release = a.release or f"{dt.date.today():%Y.%m.%d}-dev"
     out = Path(a.out) if a.out else build.ROOT / "build" / release
     m = build.run(countries, sources, out, offline=a.offline, refresh=a.refresh, max_requests=a.max_requests,
-                  release_id=release, reuse=Path(a.reuse) if a.reuse else None)
+                  release_id=release, reuse=a.reuse)
     print(f"wrote {out}")
     return 1 if m["problems"] else 0
 

@@ -3,7 +3,9 @@
 from __future__ import annotations
 
 import csv
+import importlib
 import json
+import os
 import traceback
 from pathlib import Path
 
@@ -17,7 +19,7 @@ from .sources import derived, dhs, grid3_nga, hapi, ihme, rwi, unpd_fp, worldpop
 
 ROOT = Path(__file__).resolve().parents[2]
 CONFIG = ROOT / "config"
-RAW = ROOT / "data" / "raw"
+RAW = Path(os.environ.get("HDL_RAW_DIR", ROOT / "data" / "raw"))
 
 SOURCES = {
     "worldpop": worldpop.build,
@@ -40,8 +42,27 @@ def load_countries(path: Path = CONFIG / "countries.csv") -> dict[str, Country]:
     return out
 
 
+EXTRA_SPECS: dict = {}  # source specs added by plugins (e.g. a private overlay package)
+
+
 def load_sources(path: Path = CONFIG / "sources.yaml") -> dict:
-    return yaml.safe_load(path.read_text(encoding="utf-8"))
+    return {**yaml.safe_load(path.read_text(encoding="utf-8")), **EXTRA_SPECS}
+
+
+def load_plugin(module_name: str) -> list[str]:
+    """Import a package that adds sources. It must expose SOURCES {id: build(ctx)} and SPECS {id: spec dict}
+    (same fields as config/sources.yaml). Returns the source ids it added."""
+    mod = importlib.import_module(module_name)
+    clash = set(mod.SOURCES) & set(SOURCES)
+    if clash:
+        raise ValueError(f"plugin {module_name} redefines sources {sorted(clash)}")
+    SOURCES.update(mod.SOURCES)
+    EXTRA_SPECS.update(mod.SPECS)
+    return list(mod.SOURCES)
+
+
+def classification(spec: dict) -> str:
+    return spec.get("classification") or ("public" if spec.get("publish") else "restricted")
 
 
 def load_settings(path: Path = CONFIG / "settings.yaml") -> dict:
@@ -87,6 +108,7 @@ def build_country(iso3: str, sources: list[str], fetcher: Fetcher, log) -> dict:
         result["info"][name] = info
         df = schema.frame(rows)
         spec = load_sources().get(name, {})
+        df["classification"] = classification(spec)
         if spec.get("snapshot"):
             df["as_of"] = str(spec.get("as_of", ""))
             info["as_of"] = spec.get("as_of")
@@ -96,7 +118,7 @@ def build_country(iso3: str, sources: list[str], fetcher: Fetcher, log) -> dict:
 
 
 def run(countries: list[str], sources: list[str], out_dir: Path, *, offline=False, refresh=False,
-        max_requests=1500, release_id="dev", reuse: Path | None = None) -> dict:
+        max_requests=1500, release_id="dev", reuse: Path | str | None = None) -> dict:
     from . import release
 
     out_dir.mkdir(parents=True, exist_ok=True)
@@ -116,15 +138,22 @@ def run(countries: list[str], sources: list[str], out_dir: Path, *, offline=Fals
             results.append({"iso3": iso3, "error": str(e)})
     frames = [f for r in results for f in r.get("frames", [])]
     if reuse:
-        # Carry rows from an earlier build (e.g. the public WorldPop rows built on GitHub) for sources not rebuilt here.
+        # Carry rows from an earlier build or a published release (path or URL) for sources not rebuilt here.
+        if str(reuse).startswith("http"):
+            name = "__".join(str(reuse).rstrip("/").split("/")[-2:])
+            reuse = fetcher.download(str(reuse), f"releases/{name}")
         old = schema.frame(pd.read_parquet(reuse).to_dict("records"))
+        specs = load_sources()
+        old["classification"] = [c or classification(specs.get(s, {})) for c, s in zip(old.classification, old.source_id, strict=True)]
         old = old[old.iso3.isin(countries) & ~old.source_id.isin(sources)]
         log(f"reused {len(old):,} rows from {reuse} for sources {sorted(old.source_id.unique())}")
         frames.append(old)
     long = pd.concat(frames, ignore_index=True) if frames else schema.frame([])
     extra = [row for iso3 in countries for row in derived.build(iso3, long)]
     if extra:
-        long = pd.concat([long, schema.frame(extra)], ignore_index=True)
+        ex = schema.frame(extra)
+        ex["classification"] = classification(load_sources().get("derived", {}))
+        long = pd.concat([long, ex], ignore_index=True)
         log(f"derived estimates: {len(extra)} rows")
     problems = schema.validate(long)
     manifest = release.write(results, long, out_dir, load_sources(), release_id=release_id, problems=problems,

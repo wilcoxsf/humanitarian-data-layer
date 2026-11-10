@@ -116,7 +116,10 @@ def write(results: list[dict], long: pd.DataFrame, out_dir: Path, sources: dict,
 
     public_ids = {sid for sid, s in sources.items() if s.get("publish")}
     bundles = {"full": _write_bundle(out_dir / "full", long, areas, gdfs, presence, boundaries=True)}
-    pub = long[long.source_id.isin(public_ids)]
+    pub = long[long.source_id.isin(public_ids) & long.classification.isin(["public", ""])]
+    leaked = pub[pub.classification.isin(["restricted", "irc_internal"])]
+    if len(leaked):  # belt and braces: never possible through the filter above, checked anyway
+        raise RuntimeError(f"refusing to write a public bundle containing {len(leaked)} non-public rows")
     pub_presence = presence if "hapi" in public_ids else presence.iloc[0:0]
     bundles["public"] = _write_bundle(out_dir / "public", pub, areas, gdfs, pub_presence,
                                       boundaries="geography" in public_ids)
