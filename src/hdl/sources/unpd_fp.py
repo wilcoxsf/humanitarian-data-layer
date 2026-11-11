@@ -19,8 +19,8 @@ INDICATORS = {  # IndicatorShortName -> (metric, unit)
     "UNMP": ("unmet_need_any_method", "percent"),
     "UNMModP": ("unmet_need_modern", "percent"),
     "DEMMod": ("demand_satisfied_modern", "percent"),
-    "CPModN": ("modern_method_users", "thousand women"),
-    "UNMModN": ("unmet_need_modern_women", "thousand women"),
+    "CPModN": ("modern_method_users", "women"),  # the CSV's Value column is a count of women, not thousands
+    "UNMModN": ("unmet_need_modern_women", "women"),  # check: NGA 2026 18.9% x 59.0M women 15-49 = 11.15M vs 11.13M
 }
 CATEGORIES = {"All women": "all", "Married or in a union women": "married_in_union"}
 LAST_ESTIMATE_YEAR = 2024

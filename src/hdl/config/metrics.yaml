@@ -58,8 +58,8 @@ unpd_fp/mcpr: {definition: "Modern contraceptive prevalence, UN DESA FPET model 
 unpd_fp/unmet_need_any_method: {definition: "Unmet need for family planning, any method, UN DESA FPET", caveat: "Model estimate, national."}
 unpd_fp/unmet_need_modern: {definition: "Unmet need for modern methods, UN DESA FPET", caveat: "Model estimate, national."}
 unpd_fp/demand_satisfied_modern: {definition: "Demand for family planning satisfied by modern methods (SDG 3.7.1), UN DESA FPET", caveat: "Model estimate, national."}
-unpd_fp/modern_method_users: {definition: "Women using a modern method, UN DESA FPET", caveat: "Thousands of women, national."}
-unpd_fp/unmet_need_modern_women: {definition: "Women with unmet need for modern methods, UN DESA FPET", caveat: "Thousands of women, national."}
+unpd_fp/modern_method_users: {definition: "Women using a modern method, UN DESA FPET", caveat: "Number of women (not thousands), national."}
+unpd_fp/unmet_need_modern_women: {definition: "Women with unmet need for modern methods, UN DESA FPET", caveat: "Number of women (not thousands), national."}
 unicef_nutrition/stunting_under5_jme_model: {definition: "Stunting among children under 5, JME country-level modelled estimate", caveat: "Annual model series; national only."}
 unicef_nutrition/overweight_under5_jme_model: {definition: "Overweight among children under 5, JME modelled estimate", caveat: "National only."}
 unicef_nutrition/wasting_under5_survey: {definition: "Wasting among children under 5, latest national survey (source in source_release)", caveat: "Point prevalence at survey time and seasonal; stale when older than 6 years (Somalia's is 2009)."}
